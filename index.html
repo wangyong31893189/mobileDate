@@ -22,7 +22,9 @@
     .cal_day li{min-width:28px;height:30px;line-height: 30px;float:left;background:lightgray;border: 1px solid gray;cursor:pointer;}
     .cal_day li.active{background:orange;}
     .cal_day li:hover{background:orange;}*/
-	
+	.cal_container{
+		overflow:hidden;
+	}
 	.calender{
 		/*border-radius: 4px;		
 		width: 100%;
@@ -33,7 +35,10 @@
 		overflow:hidden;
 		text-shadow: 0 1px 0 #fff;
 		font-family: Arial,helvetica;
-		font-size: 14px;*/
+		font-size: 14px;*/	
+		overflow:hidden;
+		padding: 0 2px;
+		cursor:pointer;
 	}
 	.cal_month_container{
 		border-radius: 4px;		
@@ -47,6 +52,7 @@
 		font-family: Arial,helvetica;
 		font-size: 14px;
 		margin-bottom: 10px;
+		float:left;
 	}
 	
 	.calender table{
@@ -89,14 +95,14 @@
 		color: #ccc;
 	}
 	.cal_day .active{
-		color: #fff;
+		color: #fff!important;
 		background-color: #FF4319;
 		text-shadow: none;
 	}
 	.cal_day .normal{
 		
 	}
-	.cal_day .tomorrow,.cal_day .afterday{
+	.cal_day .tomorrow,.cal_day .afterday,.cal_day .today{
 		color: #ff4319;
 	}
 </style>
@@ -106,8 +112,11 @@
 </head>
 <body>
 <section>	
-	<!--<input type="text" id="date" value="" placeholder="选择日期控件"/>-->
 	
+	选中日期：<input type="text" id="date" value="" placeholder="选择日期控件" style="width:100%;height:35px;line-height:35px;color:green;font-weight:bolder;font-size:24px;"/><br/><br/>
+	选中日期下一天：<input type="text" id="next" value="" placeholder="选择日期控件" style="width:100%;height:35px;line-height:35px;color:green;font-weight:bolder;font-size:24px;"/><br/><br/>
+	选中日期前一天：<input type="text" id="prev" value="" placeholder="选择日期控件" style="width:100%;height:35px;line-height:35px;color:green;font-weight:bolder;font-size:24px;"/><br/><br/>
+	<div class="cal_container">
 	<div class="calender" id="calender">
 	<table border="1">
 		<tr class="cal_month"><td colspan="9">2014年11月</td></tr>
@@ -127,6 +136,7 @@
 			<td>29</td>        <td>30</td>        <td>31</td>
 				</tr>
 	</table>
+	</div>
 	</div>
 </section>
 	
