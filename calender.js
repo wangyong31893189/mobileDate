@@ -472,18 +472,18 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 									date.setDate(day);
 									//alert(year+"年"+month+"月"+day+"日"+" 星期"+weekArray[week]);
 									if(that.options.currentDay){
-										that.options.currentDay.call(that,that.dateFormat(that.options.format,date));
+										that.options.currentDay.call(that,that.dateFormat(that.options.format,date),this);
 									}
 									if(that.options.nextDay){
 										date.setDate(day+1);
-										that.options.nextDay.call(that,that.dateFormat(that.options.format,date));
+										that.options.nextDay.call(that,that.dateFormat(that.options.format,date),this);
 									}
 									if(that.options.prevDay){
 										date.setDate(day-1);
-										that.options.prevDay.call(that,that.dateFormat(that.options.format,date));
+										that.options.prevDay.call(that,that.dateFormat(that.options.format,date),this);
 									}
 									if(that.options.selectDay){
-										that.options.selectDay.call(that,that.dateFormat(that.options.format,date));
+										that.options.selectDay.call(that,that.dateFormat(that.options.format,date),this);
 									}
 								};
 							}
@@ -742,6 +742,9 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 							left=browserWidth-oHeight;					
 						}
 					}*/
+				}
+				if(that.isNext&&that.options.vScroll){
+					left=left-calender.parentNode.offsetTop;
 				}
 				that.calender.style[transitionDuration] = that.options.animateTime/1000+"s";
 				calender.style[moveBy]=left+"px";
