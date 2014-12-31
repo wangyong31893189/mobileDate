@@ -1,6 +1,6 @@
 	.cal_container{
 		overflow:hidden;
-		background: #fafbfb;
+		background: #FFF;
 		position: absolute;
 		top:0;
 		left: 0;
@@ -8,9 +8,11 @@
 		min-height: 100%;
 		display: none;
 		padding-bottom: 10px;
+		font-size: 14px;
+		font-family: "黑体","Arial","微软雅黑";
 	}
 	.cal_head{
-		background: #34aadc;
+		background: #04D3BC;
 		height: 44px;
 		color: #fff;
 		line-height: 44px;
@@ -45,7 +47,7 @@
 	.cal_more{
 		width: 98%;
 		height: 45px;
-		background: #34aadc;
+		background: #04D3BC;
 		color: #fff;
 		font-weight: bold;
 		font-size: 15px;
@@ -69,6 +71,7 @@
 		overflow:hidden;
 		padding: 0 2px;
 		cursor:pointer;
+		margin: 10px;
 	}
 	.cal_month_container{
 		border-radius: 4px;		
@@ -79,7 +82,6 @@
 		margin-bottom: 10px;
 		overflow:hidden;
 		text-shadow: 0 1px 0 #fff;
-		font-family: Arial,helvetica;
 		font-size: 14px;
 		margin-bottom: 10px;
 		float:left;
@@ -99,12 +101,11 @@
 	.cal_month{
 		text-align: center;
 		font-weight: bolder;
-		color: #434649;
-		font-family: '华文细黑';
-		font-size: 24px;
-		height: 60px;
-		line-height: 60px;
-		letter-spacing: 2px;	
+		color: #333;
+		background: none!important;
+		height: 44px;
+		line-height: 44px;
+		font-size: 18px;
 		/*border: 1px solid #ccc;
 		border-bottom: none;*/
 		/*background-color: #e9e9e9;
@@ -118,22 +119,23 @@
 		color: #909499;
 		font-family: Aria;
 	}
+	.calender td{
+		border-spacing:2px;
+		border: 3px solid #fff;
+	}
 	.cal_month td{		
 		border: none;
 	}
 	.cal_week{
-		font-family: '华文细黑';
-		height:45px;
-		line-height: 45px;
-		font-size: 22px;
 		color: #484e54;
+		line-height: 18px!important;
+		height: 18px!important;
+		background-color: #fff;
 		/*background-color: #e8e8e8;*/
 	}
 	.cal_day{
 		background:#fff;
-		font-family:'Times New Roman','华文细黑';
-		font-size:20px;
-		color: #8d99a6;
+		color: #000;
 	}
 	.cal_week td,.cal_day td{
 
@@ -142,32 +144,45 @@
 		height: 60px;
 		line-height: 60px;
 		text-align: center;	
+		line-height: 36px;
+		min-width: 30px;
+		height: 36px;
+		padding-left: 0!important;
+		background-color: #f5f5f5;
+		border-bottom: none!important;		
 	}	
 	.cal_day td div{
 		height:40px;		
 		line-height: 40px;
-		width:40px;
-		margin: 0 auto;
-		border:1px solid #fff;
+		text-align: center;
+		/*border:1px solid #fff;*/
 	}
 	.cal_day td .normal:hover{			
 		
 	}	
 	.cal_day .disable{
-		color: #c6ccd2;
-		border:1px solid #fff;
+		color: #ccc;
 	}
 	.cal_day .active div{
-		color: #fff!important;
+		/*color: #fff!important;
 		border-radius: 50%;	
 		background-color: #34aadc;
-		text-shadow: none;
-	}	
+		text-shadow: none;*/
+	}
 	.cal_day .tomorrow,.cal_day .afterday,.cal_day .today{
-		color: #ff4319;
-		font-size: 15px;
+		color: #000;
 	}
-	.cal_day .tomorrow div:hover,.cal_day .afterday div:hover,.cal_day .today div:hover,.cal_day .normal div:hover{
-		border:1px solid #34aadc;
+	.cal_day .today{
+		color: #000;
+	}
+	.cal_day .cal_start div{
+		border: 1px solid #FF7F61;
+		color:#FF7F61;
+	}
+	.cal_day .cal_end div{
+		border: 1px solid #04D3BC;
+		color:#04D3BC;
+	}
+	/*.cal_day .tomorrow div:hover,.cal_day .afterday div:hover,.cal_day .today div:hover,.cal_day .normal div:hover{		
 		border-radius: 50%;	
-	}
+	}*/
