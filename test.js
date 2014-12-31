@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
 	var Calender=require("./calender");
-	var cal=new Calender({"id":"calender","weekName":"","scroll":false,"more":true,"style":"airticket","tomorrowShow":false,"afterdayShow":false,"header":true,"monthCount":"2","appType":"air","vScroll":true,"hScroll":false,"format":"yyyy-MM-dd hh:mm:ss q S 星期w","currentDay":function(data,obj){
+	var cal=new Calender({"id":"calender","weekName":"","scroll":false,"more":true,"style":"default","tomorrowShow":false,"afterdayShow":false,"header":true,"monthCount":"2","appType":"air","vScroll":true,"hScroll":false,"format":"yyyy-MM-dd hh:mm:ss q S 星期w","currentDay":function(data,obj){
 		var date=document.getElementById("date");
 		if(date)
 		{
@@ -24,10 +24,10 @@ define(function(require, exports, module) {
 		//alert(obj.innerHTML);
 	}});
 
+	cal.init();
 	var date=document.getElementById("date");
 	if(date){
 		date.onclick=function () {
-			cal.init();
 			cal.show();
 		}
 

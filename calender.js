@@ -686,11 +686,11 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 									}
 									//执行返回函数
 									if(that.options.endShow){
-										if(that.isSelectEnd){
+										if(that.isSelectEnd){  //当isSelectEnd 为true 只选择返程
 											that.isSelectEnd=false;
 											//this.className+=" cal_end";
 											that.endDate=formatDate;
-											if(that.endDate>that.startDate){
+											if(that.endDate>that.startDate||!that.startDate){
 												if(that.endActive){
 													var showText=that.endActive.getAttribute("data-show");
 													that.endActive.className=that.endActive.className.replace("cal_start","");
@@ -700,7 +700,7 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 												that.endActive=this;
 												this.className=this.className.replace("cal_start","");
 												this.className+=" cal_end";												
-												that.isSelectEnd=false;											
+												//that.isSelectEnd=false;											
 												this.innerHTML="<div>"+that.options.endShowName+"</div>";
 												if(that.options.endDay){
 													that.options.endDay.call(that,that.dateFormat(that.options.format,date),this);
@@ -712,6 +712,12 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 													that.startActive.className=that.startActive.className.replace("cal_end","");												
 													that.startActive.innerHTML="<div>"+showText+"</div>";
 													that.startActive=this;
+												}
+												if(that.endActive){
+													var showText=that.endActive.getAttribute("data-show");
+													that.endActive.className=that.endActive.className.replace("cal_start","");
+													that.endActive.className=that.endActive.className.replace("cal_end","");
+													that.endActive.innerHTML="<div>"+showText+"</div>";
 												}
 												that.isSelectEnd=true;
 												this.innerHTML="<div>"+that.options.startShowName+"</div>";
