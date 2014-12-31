@@ -58,8 +58,10 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 	var Calender=function(options){
 		this.options={
 			id:"calender",
+			scroll:true,//是否需要滑动
 			weekName:"星期",//星期前缀
 			style:"default",//默认皮肤
+			single:true,//是否只显示一个月
 			monthCount:3,//显示的月份数量
 			appType:"air",  //适用的应用类型
 			oneByOne:true,//是否需要 一月一月的滚动  true为需要  false为不需要
@@ -67,6 +69,8 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 			max:3,//可以向后查看3个月
 			min:3,//可以向前查看3个月
 			vScroll:true,//竖向
+			more:false,//是否显示加载更多按钮
+			moreName:"点击加载更多",//显示加载更多按钮上的文字
 			hScroll:false,//横向 
 			animateTime:500,//动画时间
 			selectDay:function(index){ //选择日期
@@ -90,8 +94,9 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 		for(var i in options ){
 			this.options[i]=options[i];
 		}
-	
-		this.init();
+		
+		this.initFlag=false;//是否进行过初始化
+		//this.init();
 	}
 	
 	var Pos=function (){
@@ -133,7 +138,33 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 		},
 		init:function(){
 			var that=this;
+			if(that.initFlag){
+				return;
+			}
 			var calender=that.calender=that.$(that.options.id);
+
+			if(!calender){
+				var calenderHtml='';
+				calenderContainer=document.createElement("div");
+				//calender.setAttribute("id","calender");
+				calenderContainer.setAttribute("class","cal_container");
+				if(that.options.more){
+					calenderContainer.innerHTML='<div class="calender" id="calender"></div><button id="cal_more" class="cal_more">'+that.options.moreName+'</botton>';
+				}else{
+					calenderContainer.innerHTML='<div class="calender" id="calender"></div>';					
+				}
+				document.body.appendChild(calenderContainer);
+				calender=that.calender=that.$(that.options.id);
+			}
+			/*
+			if(!calenderBg){
+				var calenderHtml='';
+				calenderBg=that.calenderBg=document.createElement("div");
+				calenderBg.setAttribute("id","cal_bg");
+				calenderBg.setAttribute("class","cal_bg"+style);
+				document.body.appendChild(calenderBg);
+			}*/
+
 			var unit=that.unit="width";
 			var moveBy=that.moveBy="marginLeft";
 			var moveStyleBy=that.moveStyleBy="margin-left";			
@@ -181,6 +212,7 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 			var weekArray=that.weekArray=[weekName+"日",weekName+"一",weekName+"二",weekName+"三",weekName+"四",weekName+"五",weekName+"六"];
 			//var monthArray=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			var monthArray=that.monthArray=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+			seajs.use("./"+that.options.style+".css");
 			//slider.width=""
 			/*for(var i=0;i<length;i++){				
 				sliderList[i].style[unit]=browserWidth+"px";				
@@ -188,14 +220,32 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 			//calender.style[unit]=browserWidth*length+"px";
 			//for (var i =0,len= calenders.length; i<len; i++) {				
 			that.showCalender(calender);
+
+			this.initFlag=true;
+		},
+		show:function(){
+			var that=this;
+			that.calender.parentNode.style.display="block";
+			//that.calenderBg.style.display="block";
+			//that.reloadCalender(calender);
+			//that.bindCalenderEvent(calender);
+		},hide:function(){
+			var that=this;
+			that.calender.parentNode.style.display="none";
+			//that.calenderBg.style.display="block";
+			//that.reloadCalender(calender);
+			//that.bindCalenderEvent(calender);
 		},
 		showCalender:function(calender){//显示日历框架 year 显示的年份   month显示的月份
 			var that=this;			
 			that.reloadCalender(calender);
 
-			that._bind(START_EV,null,function(e){that.handlerEvent(e,that)});//绑定鼠标按下或触摸开始事件
-			that._bind(MOVE_EV,null,function(e){that.handlerEvent(e,that)});//绑定鼠标移动或触摸移动事件
-			that._bind(END_EV,null,function(e){that.handlerEvent(e,that)});//绑定鼠标弹上或触摸停止事件
+			var scroll=that.options.scroll;
+			if(scroll){			
+				that._bind(START_EV,null,function(e){that.handlerEvent(e,that)});//绑定鼠标按下或触摸开始事件
+				that._bind(MOVE_EV,null,function(e){that.handlerEvent(e,that)});//绑定鼠标移动或触摸移动事件
+				that._bind(END_EV,null,function(e){that.handlerEvent(e,that)});//绑定鼠标弹上或触摸停止事件
+			}
 			/*that._bind(CANCEL_EV,null,function(e){
 				clearInterval(that.intervalId);
 			});//绑定鼠标弹上或触摸取消事件
@@ -249,35 +299,41 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 	    	//calender.getElementsByTagName("div");
 	    	//$(calender.find(".cal_show")).fadeIn("slow");
 		},
-		appendMonth:function(calender,year,month,index,type){//日历显示类型 是附加还是替换  append 附加   insert 插入   replace替换
+		appendMonth:function(calender,year,month,index,type){//日历显示类型 是附加还是替换  append 附加   before 插入   replace替换
 	    	var that=this;
 			var count=that.options.monthCount;
 			var weekArray=that.weekArray;
 			//var monthArray=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 			var monthArray=that.monthArray;
-			
-			var date=new Date();
-			if(!year&&year!=0){
-				year=date.getFullYear();
-			}else{
-				date.setYear(year);
+			if(!index){
+				index=0;
 			}
-			if(!month&&month!=0){
-				month=date.getMonth()+1;
-				if(index!=0){
-					month=month+index;
+			var tempDate=new Date();
+			tempDate.setDate(1);
+			if(!year){
+				year=tempDate.getFullYear();
+			}else{
+				tempDate.setYear(year);
+			}
+			if(!month){
+				month=tempDate.getMonth()+1;
+				//if(!index&&index!=0){
+					//month=month+index;
 					/*if(month>12){
 						year+=1
 						month=1;
 					}else if(month<1){
 						year-=1;
 						month=12;
-					}*/
-					date.setYear(year);
-					date.setMonth(month-1);
-				}
+					}*/					
+					//tempDate.setYear(year);
+					tempDate.setMonth((month+index-1));
+				//}else{
+				//	tempDate.setMonth(month);
+				//}
 			}else{
-				month=month+index;
+				//month=tempDate.getMonth()+1;
+				//month=month+index;
 				/*if(month>12){
 					year+=1
 					month=1;
@@ -285,26 +341,28 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 					year-=1;
 					month=12;
 				}*/
-				date.setYear(year);
-				date.setMonth(month-1);
+				//tempDate.setYear(year);
+				tempDate.setMonth(month+index-1);
 			}
 					
-			date.setDate(1);
-			year=date.getFullYear();
-			month=date.getMonth()+1;
+			year=tempDate.getFullYear();
+			month=tempDate.getMonth()+1;
 			that.options.year=year;
 			that.options.month=month;
-			var day=date.getDate();			
+			var day=tempDate.getDate();			
 			that.options.day=day;
-			var week=date.getDay();
+			var week=tempDate.getDay();
 			that.options.week=week;
 			var today=new Date();
 			var todayYear=that.todayYear=today.getFullYear();//当前年份
 			var todayDay=today.getDate();//当前年份月份的天数
 			var todayMonth=that.todayMonth=today.getMonth()+1;////当前年份月份
 			
-			var calendarHtml='<div class="cal_month_container"><table border="1" id=\"calender_'+year+'_'+month+'\"><tbody><tr class="cal_month"><td colspan="9">2014年11月</td></tr>'+
-			'<tr class="cal_week"></tr></tbody></table></div>';
+			var calendarArr=[];
+			calendarArr.push('<div class="cal_month_container"><table id=\"calender_'+year+'_'+month+'\"><tbody><tr class="cal_month">');			
+			calendarArr.push('<td colspan="9"></td>');
+			calendarArr.push('</tr><tr class="cal_week"></tr></tbody></table></div>');
+			var calendarHtml=calendarArr.join("");
 			switch(type){
 				case "append":
 					calender.innerHTML+=calendarHtml;
@@ -325,6 +383,9 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 					that.minMonth=month;
 					that.maxYear=year;
 					that.maxMonth=month;
+				}else{
+					that.maxYear=year;
+					that.maxMonth=month;
 				}
 			}else if(index==count-1){
 				that.maxYear=year;
@@ -334,27 +395,31 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 	    	var weekHtml="";
 			var weekArr=[];
 			var style=that.options.style;//日历皮肤
-			var sliderList=that.sliderList=calender.getElementsByTagName("div");
+			var sliderList=that.sliderList=calender.getElementsByTagName("div");					
 			var length=that.length=sliderList.length;
-			if(style=="default"&&length==1){
+			var single=that.options.single;			
+			if(style=="style1"&&single){
 				weekArr.push('<td rowspan="8" class="cal_prev">上一月</td>');
+				//weekArr.push('<td class="cal_prev">上一月</td>');
 			}
 	    	for (var i =0; i<7; i++) {						
 	    		weekArr.push("<td>"+weekArray[i]+"</td>");
 	    	}
-			if(style=="default"&&length==1){
+			if(style=="style1"&&single){
 				weekArr.push('<td rowspan="8" class="cal_next">下一月</td>');
+				//weekArr.push('<td class="cal_next">下一月</td>');
 			}
 			weekHtml=weekArr.join("");
 	    	var dayCount=that.getCountDays(year,month);
 	    	var dayHtml="";
 	    	var dayArr=["<tr class=\"cal_day\">"];
 	    	for (var i =0; i <week; i++) {
-	    		dayArr.push("<td class=\"disable\"></td>");
+	    		dayArr.push("<td class=\"disable\"><div></div></td>");
 	    	}
 			//dayArr.push("</tr><tr class=\"cal_day\">");
 			//dayCount=week+dayCount+lastDayCount;
 			var tempDate=new Date();
+			var tempDate2=new Date();
 	    	for (var i = 0; i <dayCount; i++) {
 				var newI=i+week;
 				if(newI%7==0&&i==0){
@@ -362,42 +427,56 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 				}else if(newI%7==0&&i!=dayCount){
 					dayArr.push("</tr><tr class=\"cal_day\">");
 				}
+				tempDate.setDate(i+1);
 				tempDate.setFullYear(year);
 				tempDate.setMonth(month-1);
-				tempDate.setDate(i+1);
+
+				var tomorrow=todayDay+1;
+				tempDate2.setDate(tomorrow);
+				var todayYear1=tempDate2.getFullYear();
+				var todayMonth1=tempDate2.getMonth()+1;
+				tomorrow=tempDate2.getDate();
+				var afterday=tomorrow+1;
+				tempDate2.setDate(afterday);
+				var todayYear2=tempDate2.getFullYear();
+				var todayMonth2=tempDate2.getMonth()+1;
+				afterday=tempDate2.getDate();
+				tempDate2=new Date();
+				console.log("todayYear="+todayYear+",todayYear1="+todayYear1+",todayYear2="+todayYear2+",todayMonth="+todayMonth+",todayMonth1="+todayMonth1+",todayMonth2="+todayMonth2);
+				console.log("todayDay="+todayDay+",tomorrow="+tomorrow+",afterday="+afterday+",i+1="+(i+1));
 	    		if(todayDay==(i+1)&&year==todayYear&&month==todayMonth){
 					switch(that.options.appType){
 						case "air":
-							dayArr.push("<td class=\"today active\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\">今天</td>");	 
+							dayArr.push("<td class=\"today active\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\"><div>今天</div></td>");	 
 							break;
 						default:
-							dayArr.push("<td class=\"today active\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\">"+(i+1)+"</td>");	
+							dayArr.push("<td class=\"today active\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\"><div>"+(i+1)+"</div></td>");	
 					}					
-	    		}else if(todayDay+1==(i+1)&&year==todayYear&&month==todayMonth){
+	    		}else if(tomorrow==(i+1)&&year==todayYear1&&month==todayMonth1){
 					switch(that.options.appType){
 						case "air":
-							dayArr.push("<td class=\"tomorrow\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\">明天</td>"); 
+							dayArr.push("<td class=\"tomorrow\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\"><div>明天</div></td>"); 
 							break;
 						default:
-							dayArr.push("<td class=\"normal\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\">"+(i+1)+"</td>");	
+							dayArr.push("<td class=\"normal\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\"><div>"+(i+1)+"</div></td>");	
 					} 			
-	    		}else if(todayDay+2==(i+1)&&year==todayYear&&month==todayMonth){
+	    		}else if(afterday==(i+1)&&year==todayYear2&&month==todayMonth2){
 					switch(that.options.appType){
 						case "air":
-							dayArr.push("<td class=\"afterday\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\">后天</td>");    			
+							dayArr.push("<td class=\"afterday\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\"><div>后天</div></td>");    			
 							break;
 						default:
-							dayArr.push("<td class=\"normal\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\">"+(i+1)+"</td>");	
+							dayArr.push("<td class=\"normal\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\"><div>"+(i+1)+"</div></td>");	
 					}   			
 	    		}else if(todayDay>(i+1)&&year<=todayYear&&month<=todayMonth){
-					dayArr.push("<td class=\"disable\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\">"+(i+1)+"</td>");	
+					dayArr.push("<td class=\"disable\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\"><div>"+(i+1)+"</div></td>");	
 				}else{
-	    			dayArr.push("<td class=\"normal\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\">"+(i+1)+"</td>");  			
+	    			dayArr.push("<td class=\"normal\" data-year=\""+year+"\" data-month=\""+month+"\" data-day=\""+(i+1)+"\" data-week=\""+tempDate.getDay()+"\"><div>"+(i+1)+"</div></td>");  			
 	    		}
 	    	}
 	    	var lastDayCount=(dayCount+week)%7>0?Math.ceil((dayCount+week)/7)*7-(dayCount+week):Math.ceil((dayCount+week)/7)*7-(dayCount+week);
 	    	for (var i =0; i <lastDayCount; i++) {
-	    		dayArr.push("<td class=\"disable\"></td>");  		
+	    		dayArr.push("<td class=\"disable\"><div></div></td>");  		
 	    	}
 			dayArr.push("</tr>");
 			dayHtml=dayArr.join("");
@@ -406,7 +485,21 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 			var oTrs=oTable.children[0].getElementsByTagName("tr");
 			for(var i=0,len=oTrs.length;i<len;i++){				
 				if(oTrs[i].className.indexOf("cal_month")!=-1){
-					oTrs[i].innerHTML="<td colspan=\"9\"><!--<span class=\"today\">回到今天</span>-->"+year+"年"+monthArray[month-1]+"</td>";								
+					var oTrsArr=[];
+					if(style=="default"&&single){
+						//weekArr.push('<td rowspan="8" class="cal_prev">上一月</td>');
+						oTrsArr.push('<td class="cal_prev"><div>&lt;</div></td>');
+					}
+					if(style=="default"){						
+						oTrsArr.push("<td colspan=\"5\"><!--<span class=\"today\">回到今天</span>-->"+year+"年"+monthArray[month-1]+"</td>");
+					}else{
+						oTrsArr.push("<td colspan=\"9\"><!--<span class=\"today\">回到今天</span>-->"+year+"年"+monthArray[month-1]+"</td>");
+					}
+					if(style=="default"&&single){
+						//weekArr.push('<td rowspan="8" class="cal_prev">上一月</td>');
+						oTrsArr.push('<td class="cal_next"><div>&gt;</div></td>');
+					}
+					oTrs[i].innerHTML=oTrsArr.join("");								
 				}else if(oTrs[i].className.indexOf("cal_week")!=-1){
 					oTrs[i].innerHTML=weekHtml;						
 				}		
@@ -415,23 +508,37 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 		},
 		bindCalenderEvent:function(calender){
 			var that=this;
-			//绑定上月  下月事件
+			var style=that.options.style;//日历皮肤
+			var single=that.options.single;	
+			//绑定上月  下月事件			
 			var oContainers=calender.getElementsByTagName("div");
 			for(var k=0,kLen=oContainers.length;k<kLen;k++){
+				if(oContainers[k].className.indexOf("cal_month_container")==-1){
+					continue;
+				}
 				var oTable=oContainers[k].children[0];
-				var oTrs=oTable.children[0].getElementsByTagName("tr");
+				var oTrs=oTable.tBodies[0].getElementsByTagName("tr");
 				for(var i=0,len=oTrs.length;i<len;i++){				
 					if(oTrs[i].className.indexOf("cal_month")!=-1){
 						//oTrs[i].innerHTML="<td colspan=\"9\"><!--<span class=\"today\">回到今天</span>-->"+year+"年"+monthArray[month-1]+"</td>";
-						var oTd=oTrs[i].getElementsByTagName("td")[0];
-						if(oTd){
-							var today=oTd.children;
-							if(today&&today.length>0){
-								today[0].onclick=function(){
-									that.returnToday(calender);
+						
+						var oTds=oTrs[i].getElementsByTagName("td");
+						for(var j=0,jLen=oTds.length;j<jLen;j++){
+							if(oTds[j].className.indexOf("today")!=-1){
+								oTds[j].onclick=function(){
+										that.returnToday(calender);
+								}
+							}else if(oTds[j].className.indexOf("cal_prev")!=-1){
+								oTds[j].onclick=function(){
+									that.prevMonth(calender);
 								}
 							}
-						}					
+							if(oTds[j].className.indexOf("cal_next")!=-1){
+								oTds[j].onclick=function(){
+									that.nextMonth(calender);
+								}
+							}
+						}				
 					}else if(oTrs[i].className.indexOf("cal_week")!=-1){
 						//oTrs[i].innerHTML=weekHtml;
 						var oTds=oTrs[i].getElementsByTagName("td");
@@ -489,6 +596,17 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 							}
 						}
 					}			
+				}
+			}
+			if(that.options.more){
+				var btn_more=that.$("cal_more");
+				if(btn_more){
+					btn_more.onclick=function(){
+						var maxYear=that.maxYear;
+						var maxMonth=that.maxMonth;
+						maxMonth=that.maxMonth=maxMonth+1;
+						that.appendMonth(calender,maxYear,maxMonth,0,"append");
+					};
 				}
 			}
 		},

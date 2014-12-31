@@ -11,100 +11,7 @@
 <META content="no-cache" http-equiv="cache-control">
 <META content="0" http-equiv="expires">
 <style>
-	/*.calender{width:100%;min-width:300px;font-size:12px;font-family: Arial,'宋体';tex-align:center;}
-    .cal_show{display:inline-block;min-width:270px;margin:0 auto;}
-    .cal_prev{width:10%;min-width:40px;display:inline-block;line-height:264px;height:264px;text-align: center;background:green;font-weight: bolder;font-size: 15px;color: white;cursor:pointer;}
-    .cal_next{width:10%;min-width:40px;display:inline-block;line-height:264px;height:264px;text-align: center;background:green;font-weight:bold;font-size: 15px;color: white;cursor:pointer;}
-    .cal_month{height:40px;line-height:200%;font-size:18px;font-weight: bolder;text-align: center;width: 100%;}
-    .cal_week{width: 100%;height:30px;text-align:center;padding:0;list-style:none;font-weight: bolder;margin: 0px;}
-    .cal_week li{border: 1px solid gray;min-width:28px;height:30px;line-height:30px;color:green;float:left;}
-    .cal_day{width:100%;margin:0;height:150px;padding:0;text-align:center;list-style:none;}
-    .cal_day li{min-width:28px;height:30px;line-height: 30px;float:left;background:lightgray;border: 1px solid gray;cursor:pointer;}
-    .cal_day li.active{background:orange;}
-    .cal_day li:hover{background:orange;}*/
-	.cal_container{
-		overflow:hidden;
-	}
-	.calender{
-		/*border-radius: 4px;		
-		width: 100%;
-		display: table;
-		text-align: center;
-		border: 1px solid #ccc;
-		margin-bottom: 10px;
-		overflow:hidden;
-		text-shadow: 0 1px 0 #fff;
-		font-family: Arial,helvetica;
-		font-size: 14px;*/	
-		overflow:hidden;
-		padding: 0 2px;
-		cursor:pointer;
-	}
-	.cal_month_container{
-		border-radius: 4px;		
-		width: 100%;
-		display: table;
-		text-align: center;
-		border: 1px solid #ccc;
-		margin-bottom: 10px;
-		overflow:hidden;
-		text-shadow: 0 1px 0 #fff;
-		font-family: Arial,helvetica;
-		font-size: 14px;
-		margin-bottom: 10px;
-		float:left;
-	}
 	
-	.calender table{
-		border-spacing:0;
-		width:101%;
-		border-collapse:collapse;		
-		/*border-bottom:none;
-		border-left:none;*/
-		border:1px solid #ccc;
-		border-spacing:0;
-		margin:-1px;		
-	}
-	.cal_month{
-		text-align: center;
-		font-weight: bolder;
-		color: #333;
-		/*border: 1px solid #ccc;
-		border-bottom: none;*/
-		background-color: #e9e9e9;
-		background: -webkit-linear-gradient(bottom,#e9e9e9,#f3f3f3 50%,#fcfcfc);
-		background: -webkit-gradient(linear,center bottom,center top,from(#e9e9e9),color-stop(0.5,#f3f3f3),to(#fcfcfc));
-		background: -moz-linear-gradient(bottom,#e9e9e9,#f3f3f3 50%,#fcfcfc);
-		background: -ms-linear-gradient(bottom,#e9e9e9,#f3f3f3 50%,#fcfcfc);
-		background: -o-linear-gradient(bottom,#e9e9e9,#f3f3f3 50%,#fcfcfc);
-	}
-	.cal_month td{
-		height: 26px;
-		line-height: 26px;
-		border: none;
-	}
-	.cal_week{
-		background-color: #e8e8e8;
-	}
-	.cal_week td,.cal_day td{
-		line-height: 30px;
-		height: 30px;
-		min-width: 30px;
-	}
-	.cal_day .disable{
-		color: #ccc;
-	}
-	.cal_day .active{
-		color: #fff!important;
-		background-color: #FF4319;
-		text-shadow: none;
-	}
-	.cal_day .normal{
-		
-	}
-	.cal_day .tomorrow,.cal_day .afterday,.cal_day .today{
-		color: #ff4319;
-	}
 </style>
 <title>
 测试手机端日期选择控件
@@ -116,9 +23,9 @@
 	选中日期：<input type="text" id="date" value="" placeholder="选择日期控件" style="width:100%;height:35px;line-height:35px;color:green;font-weight:bolder;font-size:24px;"/><br/><br/>
 	选中日期下一天：<input type="text" id="next" value="" placeholder="选择日期控件" style="width:100%;height:35px;line-height:35px;color:green;font-weight:bolder;font-size:24px;"/><br/><br/>
 	选中日期前一天：<input type="text" id="prev" value="" placeholder="选择日期控件" style="width:100%;height:35px;line-height:35px;color:green;font-weight:bolder;font-size:24px;"/><br/><br/>
-	<div class="cal_container">
+	<!--<div class="cal_container">
 	<div class="calender" id="calender">
-	<table border="1">
+	<table>
 		<tr class="cal_month"><td colspan="9">2014年11月</td></tr>
 			<tr class="cal_week">
 			<td rowspan="8" class="cal_prev">上一月</td><td>日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td><td rowspan="8" class="cal_next">下一月</td>
@@ -137,7 +44,7 @@
 				</tr>
 	</table>
 	</div>
-	</div>
+	</div>-->
 </section>
 	
 <!--script src="http://pic.99wuxian.com/basic/wap/js/min/plugs/sea/sea.js" charset="utf-8" ></script-->
