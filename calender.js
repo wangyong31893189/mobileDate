@@ -665,6 +665,12 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 												that.startActive.innerHTML="<div>"+showText+"</div>";
 												that.startActive=this;
 											}
+											if(that.endActive){
+												var showText=that.endActive.getAttribute("data-show");
+												that.endActive.className=that.endActive.className.replace("cal_start","");
+												that.endActive.className=that.endActive.className.replace("cal_end","");
+												that.endActive.innerHTML="<div>"+showText+"</div>";
+											}
 											this.className=this.className.replace("cal_end","");
 											this.className+=" cal_start";
 											this.innerHTML="<div>"+that.options.startShowName+"</div>";
@@ -672,6 +678,7 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 											if(that.options.startDay){
 												that.options.startDay.call(that,that.dateFormat(that.options.format,date),this);
 											}							
+											that.startDate=formatDate;
 											that.isSelectEnd=false;
 											//that.isStartShow=false;  //打开选择返程日期
 										}
@@ -681,22 +688,36 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 									if(that.options.endShow){
 										if(that.isSelectEnd){
 											that.isSelectEnd=false;
-											if(that.endActive){
-												var showText=that.endActive.getAttribute("data-show");
-												that.endActive.className=that.endActive.className.replace("cal_start","");
-												that.endActive.className=that.endActive.className.replace("cal_end","");
-												that.endActive.innerHTML="<div>"+showText+"</div>";
-											}
-											that.endActive=this;
-											this.className=this.className.replace("cal_start","");
 											//this.className+=" cal_end";
-											this.className+=" cal_end";
-											this.innerHTML="<div>"+that.options.endShowName+"</div>";
-											if(that.options.endDay){
-												that.options.endDay.call(that,that.dateFormat(that.options.format,date),this);
+											that.endDate=formatDate;
+											if(that.endDate>that.startDate){
+												if(that.endActive){
+													var showText=that.endActive.getAttribute("data-show");
+													that.endActive.className=that.endActive.className.replace("cal_start","");
+													that.endActive.className=that.endActive.className.replace("cal_end","");
+													that.endActive.innerHTML="<div>"+showText+"</div>";
+												}
+												that.endActive=this;
+												this.className=this.className.replace("cal_start","");
+												this.className+=" cal_end";												
+												that.isSelectEnd=false;											
+												this.innerHTML="<div>"+that.options.endShowName+"</div>";
+												if(that.options.endDay){
+													that.options.endDay.call(that,that.dateFormat(that.options.format,date),this);
+												}
+											}else{
+												if(that.startActive){
+													var showText=that.startActive.getAttribute("data-show");
+													that.startActive.className=that.startActive.className.replace("cal_start","");												
+													that.startActive.className=that.startActive.className.replace("cal_end","");												
+													that.startActive.innerHTML="<div>"+showText+"</div>";
+													that.startActive=this;
+												}
+												that.isSelectEnd=true;
+												this.innerHTML="<div>"+that.options.startShowName+"</div>";
+												this.className+=" cal_start";		
 											}
 											//that.isStartShow=false;  //返程选择结束之后把startShow关闭
-											that.isSelectEnd=false;											
 										}else{											
 											//that.isStartShow=true;  //打开选择返程日期
 											that.isSelectEnd=true;
