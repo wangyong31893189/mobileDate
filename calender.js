@@ -745,6 +745,7 @@ var m = Math,dummyStyle = doc.createElement('div').style,
 										that.options.prevDay.call(that,that.dateFormat(that.options.format,date),this);
 									}
 									if(that.options.selectDay){
+										date.setDate(day);
 										that.options.selectDay.call(that,that.dateFormat(that.options.format,date),this);
 									}
 								};
